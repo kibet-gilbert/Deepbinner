@@ -1,0 +1,38 @@
+Bootstrap: docker
+
+From: continuumio/miniconda3
+
+%files
+    environment.yml
+
+%post
+    /opt/conda/bin/conda env create -f environment.yml
+    NOW=`date`
+    echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
+
+%environment
+    export PATH=/opt/conda/envs/deepbinner/bin:$PATH
+
+%runscript
+    echo "Created on $NOW"
+    exec /opt/conda/envs/$(head -n 1 environment.yml | cut -f 2 -d ' ')/bin/"$@"
+
+%test
+    deepbinner_v=`deepbinner --version`
+    echo "deepbinner version is $deepbinner_v"
+    deepbinner --help
+
+%labels
+    Author kibet-gilbert
+    Version $deepbinnerversion
+
+%help
+    Singularity container for deepbinner
+    Apps available:
+    deepbinner classify: classify fast5 reads
+    deepbinner bin:      bin fasta/q reads
+    deepbinner realtime: sort fast5 files during sequencing
+    deepbinner prep:     prepare training data
+    deepbinner balance:  select balanced training set
+    deepbinner train:    train the neural network
+    deepbinner refine:   refine the training set
