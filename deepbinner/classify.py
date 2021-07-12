@@ -415,7 +415,7 @@ def print_classification_progress(completed, total, label, out_dest=sys.stderr):
 
 def set_tensorflow_threads(args):
     os.environ['OMP_NUM_THREADS'] = str(args.omp_num_threads)
-    config = tf.ConfigProto(intra_op_parallelism_threads=args.intra_op_parallelism_threads,
+    config = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=args.intra_op_parallelism_threads,
                             inter_op_parallelism_threads=args.inter_op_parallelism_threads,
                             allow_soft_placement=True,
                             device_count={'CPU': args.device_count})
